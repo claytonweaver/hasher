@@ -11,13 +11,13 @@ impl SettingsService {
         }
     }
 
-    pub fn get(&self, key: &str) -> String {
+    pub fn get(&self, key: &str) -> Option<String> {
         let settings_map = self.get_settings();
 
-        return settings_map
-            .get(key)
-            .expect(format!("Could not find value in settings with key {}", key).as_str())
-            .clone();
+        match settings_map.get(key) {
+            Some(value) => Some(value.to_owned()),
+            None => None,
+        }
     }
 
     pub fn set(&self, key: &str, value: &str) {
@@ -54,5 +54,39 @@ impl SettingsService {
             .expect("Was unable to deserialize string to a hashmap format, check json structure");
 
         return settings_map;
+    }
+}
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_set_and_get() {
+        let settings_service = SettingsService::new("c:/git/rust/hasher/src/settings.json");
+
+        settings_service.set("foo", "bar");
+
+        let foo_value = settings_service.get("foo");
+
+        assert!(foo_value.is_some());
+        assert_eq!(foo_value.unwrap(), "bar");
+    }
+
+    #[test]
+    fn test_clear() {
+        let settings_service = SettingsService::new("c:/git/rust/hasher/src/settings.json");
+
+        settings_service.set("foo", "bar");
+
+        let foo_value = settings_service.get("foo");
+
+        assert!(foo_value.is_some());
+        assert_eq!(foo_value.unwrap(), "bar");
+
+        settings_service.clear();
+
+        let empty = settings_service.get("foo");
+
+        assert!(empty.is_none());
     }
 }
