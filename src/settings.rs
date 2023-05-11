@@ -62,7 +62,7 @@ mod tests {
 
     #[test]
     fn test_set_and_get() {
-        let settings_service = SettingsService::new("c:/git/rust/hasher/src/settings.json");
+        let settings_service = SettingsService::new("./src/settings.json");
 
         settings_service.set("foo", "bar");
 
@@ -74,7 +74,7 @@ mod tests {
 
     #[test]
     fn test_clear() {
-        let settings_service = SettingsService::new("c:/git/rust/hasher/src/settings.json");
+        let settings_service = SettingsService::new("./src/settings.json");
 
         settings_service.set("foo", "bar");
 
